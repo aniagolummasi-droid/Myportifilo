@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+  <rect width="800" height="500" fill="#0f172a"/>
+  <rect x="80" y="80" width="640" height="320" rx="40" fill="#0f172a" stroke="#22d3ee" stroke-width="16"/>
+  <path d="M200 220h400" stroke="#22d3ee" stroke-width="20" stroke-linecap="round"/>
+  <path d="M200 290h250" stroke="#22d3ee" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="620" cy="260" r="40" fill="#22d3ee"/>
+  <text x="400" y="460" fill="#ffffff" font-size="48" text-anchor="middle" font-family="Arial, sans-serif">Bank App</text>
+</svg>
