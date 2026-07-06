@@ -6,13 +6,17 @@ import {
   FaExternalLinkAlt,
   FaTimes,
 } from "react-icons/fa";
+import bankImg from "../assets/bank.png";
+import academiaImg from "../assets/academie.png";
+import planetImg from "../assets/planent.png";
+import portfolioImg from "../assets/protifio.png";
 
 const projects = [
   {
     id: 1,
     title: "Digital Banking System",
     category: "Web Development",
-    image: "/projects/bank.svg",
+    image: bankImg,
     github: "https://github.com/aniagolummasi-droid",
     demo: "#",
     description:
@@ -23,7 +27,7 @@ const projects = [
     id: 2,
     title: "Hospital Diagnostic Portal",
     category: "Healthcare",
-    image: "/projects/hospital.svg",
+    image: academiaImg,
     github: "https://github.com/aniagolummasi-droid",
     demo: "#",
     description:
@@ -34,7 +38,7 @@ const projects = [
     id: 3,
     title: "Research Management System",
     category: "Research",
-    image: "/projects/research.svg",
+    image: planetImg,
     github: "https://github.com/aniagolummasi-droid",
     demo: "#",
     description:
@@ -45,7 +49,7 @@ const projects = [
     id: 4,
     title: "Professional Portfolio",
     category: "Web Development",
-    image: "/projects/portfolio.svg",
+    image: portfolioImg,
     github: "https://github.com/aniagolummasi-droid",
     demo: "#",
     description:
