@@ -13,6 +13,14 @@ const initialForm = {
 
 const hasEmailJsValue = (value) => Boolean(value && !value.includes("xxxxx") && !value.startsWith("your_"));
 
+const getEmailJsConfig = () => ({
+  serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID,
+  templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+  publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+});
+
+const isEmailJsConfigured = (config) => Object.values(config).every(hasEmailJsValue);
+
 export default function NeonContact() {
   const [formData, setFormData] = useState(initialForm);
   const [sending, setSending] = useState(false);
@@ -43,11 +51,9 @@ export default function NeonContact() {
       return;
     }
 
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    const emailJsConfig = getEmailJsConfig();
 
-    if (![serviceId, templateId, publicKey].every(hasEmailJsValue)) {
+    if (!isEmailJsConfigured(emailJsConfig)) {
       toast("EmailJS is not configured yet, opening your email app instead.");
       openMailFallback();
       return;
@@ -57,8 +63,8 @@ export default function NeonContact() {
 
     try {
       await emailjs.send(
-        serviceId,
-        templateId,
+        emailJsConfig.serviceId,
+        emailJsConfig.templateId,
         {
           from_name: formData.name,
           from_email: formData.email,
@@ -66,14 +72,15 @@ export default function NeonContact() {
           message: formData.message,
           to_email: contactEmail,
         },
-        { publicKey },
+        { publicKey: emailJsConfig.publicKey },
       );
 
       toast.success("Message sent successfully.");
       setFormData(initialForm);
     } catch (error) {
-      console.error(error);
-      toast.error("Email service failed, opening your email app.");
+      const errorMessage = error?.text || error?.message || "The EmailJS request failed.";
+      console.error("EmailJS error:", errorMessage, error);
+      toast.error("Email service failed. Please verify your EmailJS setup or use the email app fallback.");
       openMailFallback();
     } finally {
       setSending(false);
