@@ -1,25 +1,15 @@
 import { useState } from "react";
-import emailjs from "@emailjs/browser";
 import toast from "react-hot-toast";
 import { FaEnvelope, FaMapMarkerAlt, FaPaperPlane, FaPhone } from "react-icons/fa";
 
 const contactEmail = "aniagolummasi@gmail.com";
+const formspreeEndpoint = "https://formspree.io/f/mykqaelr";
 const initialForm = {
   name: "",
   email: "",
   subject: "",
   message: "",
 };
-
-const hasEmailJsValue = (value) => Boolean(value && !value.includes("xxxxx") && !value.startsWith("your_"));
-
-const getEmailJsConfig = () => ({
-  serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID,
-  templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-  publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
-});
-
-const isEmailJsConfigured = (config) => Object.values(config).every(hasEmailJsValue);
 
 export default function NeonContact() {
   const [formData, setFormData] = useState(initialForm);
@@ -51,36 +41,27 @@ export default function NeonContact() {
       return;
     }
 
-    const emailJsConfig = getEmailJsConfig();
-
-    if (!isEmailJsConfigured(emailJsConfig)) {
-      toast("EmailJS is not configured yet, opening your email app instead.");
-      openMailFallback();
-      return;
-    }
-
     setSending(true);
 
     try {
-      await emailjs.send(
-        emailJsConfig.serviceId,
-        emailJsConfig.templateId,
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          subject: formData.subject || "Portfolio message",
-          message: formData.message,
-          to_email: contactEmail,
+      const response = await fetch(formspreeEndpoint, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
         },
-        { publicKey: emailJsConfig.publicKey },
-      );
+        body: new FormData(event.currentTarget),
+      });
+
+      if (!response.ok) {
+        throw new Error("Formspree request failed");
+      }
 
       toast.success("Message sent successfully.");
       setFormData(initialForm);
+      event.currentTarget.reset();
     } catch (error) {
-      const errorMessage = error?.text || error?.message || "The EmailJS request failed.";
-      console.error("EmailJS error:", errorMessage, error);
-      toast.error("Email service failed. Please verify your EmailJS setup or use the email app fallback.");
+      console.error("Formspree error:", error);
+      toast.error("Message delivery failed. Please try again or use the email app fallback.");
       openMailFallback();
     } finally {
       setSending(false);
