@@ -52,11 +52,14 @@ export default function NeonContact() {
         body: new FormData(event.currentTarget),
       });
 
-      if (!response.ok) {
-        throw new Error("Formspree request failed");
+      const result = await response.json();
+      console.log("Formspree response:", result);
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || "Formspree request failed");
       }
 
-      toast.success("Message sent successfully.");
+      toast.success("Message sent successfully!");
       setFormData(initialForm);
       event.currentTarget.reset();
     } catch (error) {
